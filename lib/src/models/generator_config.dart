@@ -6,7 +6,7 @@ part 'generator_config.freezed.dart';
 part 'generator_config.g.dart';
 
 @freezed
-class GeneratorConfig with _$GeneratorConfig {
+abstract class GeneratorConfig with _$GeneratorConfig {
   factory GeneratorConfig({
     @Default(false) bool navigator2,
   }) = _GeneratorConfig;

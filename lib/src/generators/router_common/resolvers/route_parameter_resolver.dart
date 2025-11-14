@@ -6,8 +6,8 @@ import 'package:stacked_generator/src/generators/router_common/resolvers/type_re
 import 'package:stacked_generator/utils.dart';
 import 'package:stacked_shared/stacked_shared.dart';
 
-const _pathParamChecker = TypeChecker.fromRuntime(PathParam);
-const _queryParamChecker = TypeChecker.fromRuntime(QueryParam);
+const _pathParamChecker = TypeChecker.typeNamed(PathParam);
+const _queryParamChecker = TypeChecker.typeNamed(QueryParam);
 
 class RouteParameterResolver {
   final TypeResolver _typeResolver;
@@ -24,7 +24,8 @@ class RouteParameterResolver {
       return _resolveFunctionType(parameterElement);
     }
     var type = _typeResolver.resolveType(paramType);
-    final paramName = parameterElement.name3?.replaceFirst("_", '');
+    final paramName = parameterElement.name?.replaceFirst("_", '') ??
+        parameterElement.displayName;
     var pathParamAnnotation =
         _pathParamChecker.firstAnnotationOfExact(parameterElement);
     String? paramAlias;
@@ -54,14 +55,14 @@ class RouteParameterResolver {
 
     throwIf(
       pathParamAnnotation != null && queryParamAnnotation != null,
-      '${parameterElement.name3} can not be both a pathParam and a queryParam!',
+      '${parameterElement.name} can not be both a pathParam and a queryParam!',
       element: parameterElement,
     );
 
     return ParamConfig(
       type: type,
       element: parameterElement,
-      name: paramName!,
+      name: paramName,
       alias: paramAlias,
       isPositional: parameterElement.isPositional,
       hasRequired: parameterElement.isRequired,
@@ -83,7 +84,7 @@ class RouteParameterResolver {
       type: _typeResolver.resolveType(type),
       params: type.formalParameters.map(resolve).toList(),
       element: paramElement,
-      name: paramElement.name3!,
+      name: paramElement.name!,
       defaultValueCode: paramElement.defaultValueCode,
       isRequired: paramElement.isRequiredNamed,
       isPositional: paramElement.isPositional,
